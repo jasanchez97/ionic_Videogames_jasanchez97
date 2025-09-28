@@ -1,0 +1,7 @@
+{
+  "name": "eternalGaming",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

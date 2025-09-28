@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>videogames-form</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">videogames-form</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="gameForm" (ngSubmit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">Desarrollador/a</ion-label>
+      <ion-input formControlName="developer" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="getFormControl('developer')?.hasError('required') && getFormControl('developer')?.touched">
+      La información de desarrollador/a es obligatoria.
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Fecha de salida</ion-label>
+      <ion-input formControlName="releaseDate" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="getFormControl('releaseDate')?.hasError('required') && getFormControl('releaseDate')?.touched">
+      La información de fecha de salida es obligatoria
+    </ion-note>
+
+    <ion-item>
+      <ion-label position="floating">Categoría</ion-label>
+      <ion-input formControlName="category" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="getFormControl('category')?.hasError('required') && getFormControl('category')?.touched">
+      La información de categoría es obligatoria
+    </ion-note>
+
+    <ion-button expand="full" type="submit" [disabled]="!gameForm.valid">
+      {{ getSubmitButtonText() }}
+    </ion-button>
+  </form>
+</ion-content>
