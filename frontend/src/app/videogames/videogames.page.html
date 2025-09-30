@@ -2,6 +2,7 @@
   <ion-list>
     <ion-item *ngFor="let game of games">
       <ion-label>
+        <h1>{{ game.name }}</h1>
         <h2>{{ game.developer }}</h2>
         <p>Fecha: {{ game.releaseDate }}</p>
         <p>Categoría: {{ game.category }}</p>

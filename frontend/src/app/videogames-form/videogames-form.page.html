@@ -13,6 +13,14 @@
 
   <form [formGroup]="gameForm" (ngSubmit)="onSubmit()">
     <ion-item>
+      <ion-label position="floating">Videojuego</ion-label>
+      <ion-input formControlName="name" type="text"></ion-input>
+    </ion-item>
+    <ion-note color="danger" *ngIf="getFormControl('name')?.hasError('required') && getFormControl('name')?.touched">
+      La información del nombre es obligatoria.
+    </ion-note>
+
+    <ion-item>
       <ion-label position="floating">Desarrollador/a</ion-label>
       <ion-input formControlName="developer" type="text"></ion-input>
     </ion-item>

@@ -11,6 +11,7 @@ exports.create = (req, res) => {
     }
 
     const game = {
+        name: req.body.name,
         developer: req.body.developer,
         releaseDate: req.body.releaseDate,
         category: req.body.category

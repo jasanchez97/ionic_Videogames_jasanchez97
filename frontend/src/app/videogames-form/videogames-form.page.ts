@@ -21,6 +21,7 @@ export class VideogamesFormPage implements OnInit {
     private activatedRoute: ActivatedRoute
   ) {
     this.gameForm = this.formBuilder.group({
+      name: ['', Validators.required],
       developer: ['', Validators.required],
       releaseDate: ['', Validators.required],
       category: ['', Validators.required]
@@ -67,13 +68,14 @@ export class VideogamesFormPage implements OnInit {
     this.gameService.getGameById(id).subscribe((game: any) => {
       if (game) {
         this.gameForm.patchValue({
+          name: game.name,
           developer: game.developer,
           releaseDate: game.releaseDate,
           category: game.category
         });
       }
     }, error => {
-      console.error('Error loading game:', error);
+      console.error('Error al cargar el videojuego: ', error);
       this.gameService.getGames().subscribe((games: any) => {
         const gameFromList = Array.isArray(games)
           ? games.find((g: any) => g.id === id)
@@ -81,6 +83,7 @@ export class VideogamesFormPage implements OnInit {
 
         if (gameFromList) {
           this.gameForm.patchValue({
+            name: gameFromList.name,
             developer: gameFromList.developer,
             releaseDate: gameFromList.releaseDate,
             category: gameFromList.category

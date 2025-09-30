@@ -39,12 +39,11 @@ export class VideogamesPage implements OnInit {
     if (confirm('¿Estás seguro de que quieres eliminar este juego?')) {
       this.gameService.deleteGame(id).subscribe({
         next: (response) => {
-          console.log('Juego eliminado:', response);
-          // Recargar la lista
+          console.log('Juego eliminado: ', response);
           this.loadGames();
         },
         error: (error) => {
-          console.error('Error eliminando juego:', error);
+          console.error('Error eliminando el juego: ', error);
         }
       });
     }

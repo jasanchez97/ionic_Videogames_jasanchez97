@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
 })
 export class HomePage {
 
+  name: string = "Lorelei and the laser eyes"
   developer: string = "Annapurna Interactive";
   releaseDate: string = "16/04/2024";
-  category: string = "Puzzles"
+  category: string = "Puzzles, Logic"
 
   constructor(private router: Router) { }
   gotoMyVideogames() {
