@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Videojuegos
+      Barra de herramientas
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,16 +9,27 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Videojuegos</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div>
-    <h1 class="developer">Videojuego: {{name}}</h1>
-    <h2>Desarrollador/a: {{developer}}</h2>
+  <div class="display-main-page">
+    <div class="title-page">
+      <h1>Eternal Gaming</h1>
+    </div>
+
+    <div class="premiere-title">
+      <h2 class="premiere-text-title">Estreno</h2>
+    </div>
+  </div>
+
+  <div class="display-new-games">
+    <h2 class="developer">Videojuego: {{name}}</h2>
+    <h3>Desarrollador/a: {{developer}}</h3>
     <p>Fecha de lanzamiento: {{releaseDate}}</p>
     <p>Categoría: {{category}}</p>
   </div>
-
-  <ion-button expand="block" (click)="gotoMyVideogames()">Mostrar videojuegos</ion-button>
+  <div class="button-section">
+    <ion-button (click)="gotoMyVideogames()">Gestionar videojuegos</ion-button>
+  </div>
 </ion-content>
