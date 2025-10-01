@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameService } from '../services/game-service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-videogames',
@@ -14,7 +15,8 @@ export class VideogamesPage implements OnInit {
 
   constructor(
     private gameService: GameService,
-    private router: Router
+    private router: Router,
+    private alertController: AlertController,
   ) { }
 
   ngOnInit() {
@@ -35,17 +37,39 @@ export class VideogamesPage implements OnInit {
     this.router.navigate(['/videogames-form', id]);
   }
 
-  deleteGame(id: number) {
-    if (confirm('¿Estás seguro de que quieres eliminar este juego?')) {
-      this.gameService.deleteGame(id).subscribe({
-        next: (response) => {
-          console.log('Juego eliminado: ', response);
-          this.loadGames();
+  async deleteGame(id: number, gameName: string) {
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: `¿Estás seguro de que quieres eliminar "${gameName}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
         },
-        error: (error) => {
-          console.error('Error eliminando el juego: ', error);
+        {
+          text: 'Eliminar',
+          role: 'destructive',
+          handler: () => {
+            this.confirmDelete(id);
+          }
         }
-      });
-    }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  confirmDelete(id: number) {
+    this.gameService.deleteGame(id).subscribe({
+      next: (response) => {
+        console.log('Juego eliminado:', response);
+        // Recargar la lista o actualizar la vista
+        this.loadGames();
+      },
+      error: (error) => {
+        console.error('Error al eliminar:', error);
+      }
+    });
   }
 }

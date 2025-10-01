@@ -3,3 +3,49 @@
     flex-direction: column;
     align-items: center;
 }
+
+.custom-alert {
+  --background: #2a2a2a;
+  --color: white;
+  
+  .alert-wrapper {
+    border-radius: 12px;
+  }
+  
+  .alert-head {
+    text-align: center;
+    background: var(--ion-color-danger);
+    color: white;
+    padding: 16px;
+    
+    h2 {
+      font-weight: bold;
+      margin: 0;
+    }
+  }
+  
+  .alert-message {
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.4;
+    padding: 20px;
+    color: #e0e0e0;
+    
+    strong {
+      color: var(--ion-color-warning);
+      font-weight: bold;
+    }
+  }
+}
+
+.cancel-btn {
+  color: var(--ion-color-medium) !important;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background: var(--ion-color-danger) !important;
+  color: white !important;
+  font-weight: bold;
+  border-radius: 8px;
+}
