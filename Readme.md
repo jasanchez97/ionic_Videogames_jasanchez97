@@ -1,4 +1,4 @@
-# Universe
+# Videogames App
 
 This page is simply a sample of an effort to achieve the dream of developing a website, with astronomy as a topic that I liked so much as a child.
 
@@ -44,7 +44,7 @@ If you don't follow the installation steps it won't work in any way, so it's imp
 Open 2 gitbash terminal, one cd backend and the other cd frontend and insert in each one these commands:
 
     backend: node index.js
-
+---
     frontend: ionic serve
 
 Wait for a moment and It should open the browser with the app showing.
