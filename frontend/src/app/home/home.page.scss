@@ -33,39 +33,54 @@
 }
 
 .premiere-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 50vw;
-    user-select: none;
-    font-size: 2.4rem;
-    font-family: 'Cormorant Garamond', serif;
-    z-index: 9;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 50vw;
+  user-select: none;
+  font-size: 2.4rem;
+  font-family: 'Cormorant Garamond', serif;
+  z-index: 9;
 }
 
 .premiere-text-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 2.2rem;
-    font-weight: bold;
-    background: linear-gradient(270deg,
-            #FF0000, #FF3F00, #FF7F00, #FFBF00, #FFFF00, #BFFF00, #00FF00, #007FFF, #0000FF,
-            #240097, #4B0082, #240097, #0000FF, #007FFF, #00FF00, #BFFF00, #FFFF00, #FFBF00,
-            #FF7F00, #FF3F00, #FF0000);
-    background-size: 3000% 3000%;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(2.5px 2.5px 2.5px #000000);
-    animation: gradienteAnim 84s linear infinite;
-    margin: 0%;
-    z-index: 8;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.2rem;
+  font-weight: bold;
+  background: linear-gradient(270deg,
+      #FF0000, #FF3F00, #FF7F00, #FFBF00, #FFFF00, #BFFF00, #00FF00, #007FFF, #0000FF,
+      #240097, #4B0082, #240097, #0000FF, #007FFF, #00FF00, #BFFF00, #FFFF00, #FFBF00,
+      #FF7F00, #FF3F00, #FF0000);
+  background-size: 3000% 3000%;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2.5px 2.5px 2.5px #000000);
+  animation: gradienteAnim 84s linear infinite;
+  margin: 0%;
+  z-index: 8;
 }
 
 .display-new-games {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   position: relative;
   left: 2vw;
 }
+
+.game-premiere-information {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+#first-game-premiere {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 90vw;
+}
+
+.first-game-premiere-photo {}
 
 .button-section {
   display: flex;
@@ -74,37 +89,43 @@
 }
 
 @keyframes gradienteAnim {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @-webkit-keyframes gradienteAnim {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 @-moz-keyframes gradienteAnim {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }

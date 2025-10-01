@@ -24,10 +24,15 @@
   </div>
 
   <div class="display-new-games">
-    <h2 class="developer">Videojuego: {{name}}</h2>
-    <h3>Desarrollador/a: {{developer}}</h3>
-    <p>Fecha de lanzamiento: {{releaseDate}}</p>
-    <p>Categoría: {{category}}</p>
+    <div class="game-premiere-information">
+      <h2 class="developer">Videojuego: {{name}}</h2>
+      <h3>Desarrollador/a: {{developer}}</h3>
+      <p>Fecha de lanzamiento: {{releaseDate}}</p>
+      <p>Categoría: {{category}}</p>
+    </div>
+    <div class="first-game-premiere-img">
+      <img id="first-game-premiere" src="../../assets/img/RE9.webp" alt="Resident-Evil-Requiem">
+    </div>
   </div>
   <div class="button-section">
     <ion-button (click)="gotoMyVideogames()">Gestionar videojuegos</ion-button>
