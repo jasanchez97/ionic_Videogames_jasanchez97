@@ -3,6 +3,9 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.STRING
         },
+        subtitle: {
+            type: Sequelize.STRING
+        },
         developer: {
             type: Sequelize.STRING
         },
@@ -35,6 +38,9 @@ module.exports = (sequelize, Sequelize) => {
         },
         category: {
             type: Sequelize.STRING
+        },
+        stock: {
+            type: Sequelize.INTEGER
         }
     });
     return Game;

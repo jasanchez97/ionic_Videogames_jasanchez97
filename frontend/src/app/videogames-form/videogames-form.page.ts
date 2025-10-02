@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { GameService } from '../services/game-service';
@@ -13,6 +13,9 @@ export class VideogamesFormPage implements OnInit {
   gameForm: FormGroup;
   isEditing: boolean = false;
   gameId: number | null = null;
+  @ViewChild('fileInput', { static: false }) fileInput!: ElementRef;
+  selectedFile: File | null = null;
+  fileError: string = '';
 
   constructor(
     public formBuilder: FormBuilder,
@@ -22,9 +25,11 @@ export class VideogamesFormPage implements OnInit {
   ) {
     this.gameForm = this.formBuilder.group({
       name: ['', Validators.required],
+      subtitle: [''],
       developer: ['', Validators.required],
       releaseDate: ['', [Validators.required, this.dateValidator]],
-      category: ['', Validators.required]
+      category: ['', Validators.required],
+      stock: ['', [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -40,6 +45,118 @@ export class VideogamesFormPage implements OnInit {
         this.gameId = null;
       }
     });
+  }
+
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    this.fileError = '';
+    
+    if (file) {
+      if (file.type !== 'image/webp') {
+        this.fileError = 'Solo se permiten archivos .webp';
+        this.selectedFile = null;
+        if (this.fileInput && this.fileInput.nativeElement) {
+          this.fileInput.nativeElement.value = '';
+        }
+        return;
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        this.fileError = 'La imagen no puede ser mayor a 5MB';
+        this.selectedFile = null;
+        if (this.fileInput && this.fileInput.nativeElement) {
+          this.fileInput.nativeElement.value = '';
+        }
+        return;
+      }
+      
+      this.selectedFile = file;
+      console.log('Archivo seleccionado:', file.name);
+    }
+  }
+
+  createGame() {
+  console.log('Intentando crear juego...');
+  
+  if (this.gameForm.valid) {
+    const formData = new FormData();
+    
+    // Agregar todos los campos del formulario
+    formData.append('name', this.gameForm.value.name);
+    formData.append('subtitle', this.gameForm.value.subtitle || '');
+    formData.append('developer', this.gameForm.value.developer);
+    formData.append('releaseDate', this.formatDateForSubmit(this.gameForm.value.releaseDate));
+    formData.append('category', this.gameForm.value.category);
+    formData.append('stock', this.gameForm.value.stock.toString());
+    
+    // Agregar archivo si existe
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile, this.selectedFile.name);
+    }
+    
+    // Ver qué se está enviando
+    console.log('=== DATOS ENVIADOS AL BACKEND ===');
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+    
+    this.gameService.createGame(formData).subscribe({
+      next: (response) => {
+        console.log('Juego creado exitosamente:', response);
+        this.router.navigateByUrl("/videogames");
+      },
+      error: (error) => {
+        console.error('Error completo al crear juego:', error);
+        console.error('Mensaje de error:', error.message);
+        console.error('Status:', error.status);
+        if (error.error) {
+          console.error('Error del servidor:', error.error);
+        }
+      }
+    });
+  } else {
+    console.log("Formulario no válido");
+    this.markAllFieldsAsTouched();
+  }
+}
+
+  updateGame() {
+    console.log('Intentando actualizar juego...');
+    console.log('Formulario válido:', this.gameForm.valid);
+    
+    if (this.gameForm.valid && this.gameId) {
+      const formData = new FormData();
+      
+      formData.append('name', this.gameForm.value.name);
+      formData.append('subtitle', this.gameForm.value.subtitle || '');
+      formData.append('developer', this.gameForm.value.developer);
+      formData.append('releaseDate', this.formatDateForSubmit(this.gameForm.value.releaseDate));
+      formData.append('category', this.gameForm.value.category);
+      formData.append('stock', this.gameForm.value.stock.toString());
+      
+      if (this.selectedFile) {
+        formData.append('image', this.selectedFile, this.selectedFile.name);
+      }
+      
+      const formDataObj: any = {};
+      formData.forEach((value, key) => {
+        formDataObj[key] = value;
+      });
+      console.log('Datos a actualizar:', formDataObj);
+      
+      this.gameService.updateGame(this.gameId, formData).subscribe({
+        next: (response) => {
+          console.log('Juego actualizado exitosamente:', response);
+          this.router.navigateByUrl("/videogames");
+        },
+        error: (error) => {
+          console.error('Error al actualizar juego:', error);
+        }
+      });
+    } else {
+      console.log("Formulario no válido o ID no disponible");
+      this.markAllFieldsAsTouched();
+    }
   }
 
   dateValidator(control: AbstractControl): ValidationErrors | null {
@@ -92,62 +209,6 @@ export class VideogamesFormPage implements OnInit {
     return `${anio}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
   }
 
-  createGame() {
-    console.log('Intentando crear juego...');
-    console.log('Formulario válido:', this.gameForm.valid);
-    console.log('Errores del formulario:', this.gameForm.errors);
-    console.log('Errores de releaseDate:', this.gameForm.get('releaseDate')?.errors);
-    
-    if (this.gameForm.valid) {
-      const formData = {
-        ...this.gameForm.value,
-        releaseDate: this.formatDateForSubmit(this.gameForm.value.releaseDate)
-      };
-      
-      console.log('Datos a enviar:', formData);
-      
-      this.gameService.createGame(formData).subscribe({
-        next: (response) => {
-          console.log('Juego creado exitosamente:', response);
-          this.router.navigateByUrl("/videogames");
-        },
-        error: (error) => {
-          console.error('Error al crear juego:', error);
-        }
-      });
-    } else {
-      console.log("Formulario no válido");
-      this.markAllFieldsAsTouched();
-    }
-  }
-
-  updateGame() {
-    console.log('Intentando actualizar juego...');
-    console.log('Formulario válido:', this.gameForm.valid);
-    
-    if (this.gameForm.valid && this.gameId) {
-      const formData = {
-        ...this.gameForm.value,
-        releaseDate: this.formatDateForSubmit(this.gameForm.value.releaseDate)
-      };
-      
-      console.log('Datos a actualizar:', formData);
-      
-      this.gameService.updateGame(this.gameId, formData).subscribe({
-        next: (response) => {
-          console.log('Juego actualizado exitosamente:', response);
-          this.router.navigateByUrl("/videogames");
-        },
-        error: (error) => {
-          console.error('Error al actualizar juego:', error);
-        }
-      });
-    } else {
-      console.log("Formulario no válido o ID no disponible");
-      this.markAllFieldsAsTouched();
-    }
-  }
-
   loadGameData(id: number) {
     this.gameService.getGameById(id).subscribe((game: any) => {
       if (game) {
@@ -159,9 +220,11 @@ export class VideogamesFormPage implements OnInit {
         
         this.gameForm.patchValue({
           name: game.name,
+          subtitle: game.subtitle || '',
           developer: game.developer,
           releaseDate: formattedDate,
-          category: game.category
+          category: game.category,
+          stock: game.stock || 0
         });
       }
     }, error => {
@@ -180,9 +243,11 @@ export class VideogamesFormPage implements OnInit {
           
           this.gameForm.patchValue({
             name: gameFromList.name,
+            subtitle: gameFromList.subtitle || '',
             developer: gameFromList.developer,
             releaseDate: formattedDate,
-            category: gameFromList.category
+            category: gameFromList.category,
+            stock: gameFromList.stock || 0
           });
         }
       });

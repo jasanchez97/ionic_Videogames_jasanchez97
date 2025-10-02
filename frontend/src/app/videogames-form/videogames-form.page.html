@@ -23,7 +23,10 @@
     <ion-note color="danger" *ngIf="getFormControl('name')?.hasError('required') && getFormControl('name')?.touched">
       La información del nombre es obligatoria.
     </ion-note>
-
+    <ion-item>
+      <ion-label position="floating">Subtítulo</ion-label>
+      <ion-input formControlName="subtitle" type="text"></ion-input>
+    </ion-item>
     <ion-item>
       <ion-label position="floating">Desarrollador/a</ion-label>
       <ion-input formControlName="developer" type="text"></ion-input>
@@ -32,7 +35,6 @@
       *ngIf="getFormControl('developer')?.hasError('required') && getFormControl('developer')?.touched">
       La información de desarrollador/a es obligatoria.
     </ion-note>
-
     <ion-item>
       <ion-label position="floating">Fecha de salida</ion-label>
       <ion-input formControlName="releaseDate" type="text" placeholder="DD/MM/AAAA" (input)="onDateInput($event)">
@@ -50,11 +52,6 @@
       *ngIf="getFormControl('releaseDate')?.hasError('invalidDate') && getFormControl('releaseDate')?.touched">
       Fecha no válida. Verifique día, mes y año
     </ion-note>
-    <ion-note color="danger"
-      *ngIf="getFormControl('releaseDate')?.hasError('futureDate') && getFormControl('releaseDate')?.touched">
-      No se permiten fechas futuras
-    </ion-note>
-
     <ion-item>
       <ion-label position="floating">Categoría</ion-label>
       <ion-input formControlName="category" type="text"></ion-input>
@@ -62,6 +59,18 @@
     <ion-note color="danger"
       *ngIf="getFormControl('category')?.hasError('required') && getFormControl('category')?.touched">
       La información de categoría es obligatoria
+    </ion-note>
+    <ion-item>
+      <ion-label position="floating">Stock</ion-label>
+      <ion-input formControlName="stock" type="text"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Imagen del videojuego</ion-label>
+      <input #fileInput type="file" accept=".webp" (change)="onFileSelected($event)" style="margin-top: 0.5rem;" />
+      <ion-note color="medium">Solo se permiten archivos .webp</ion-note>
+    </ion-item>
+    <ion-note color="danger" *ngIf="fileError">
+      {{ fileError }}
     </ion-note>
     <div class="button-section">
       <ion-button type="submit" [disabled]="!gameForm.valid">

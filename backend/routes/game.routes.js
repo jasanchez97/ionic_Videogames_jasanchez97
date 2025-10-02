@@ -1,8 +1,13 @@
 module.exports = app => {
     const games = require("../controllers/game.controller.js");
-    var router = require("express").Router();
+    const express = require('express');
+    const router = express.Router();
+    const multer = require('multer');
 
-    router.post("/", games.create);
+    // Configurar multer para manejar FormData
+    const upload = multer();
+
+    router.post('/', upload.none(), gameController.create);
 
     router.get("/", games.findAll);
 

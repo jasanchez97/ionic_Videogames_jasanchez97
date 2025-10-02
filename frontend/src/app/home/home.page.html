@@ -10,6 +10,7 @@
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">Videojuegos</ion-title>
+      <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     </ion-toolbar>
   </ion-header>
 
@@ -17,23 +18,47 @@
     <div class="title-page">
       <h1>Eternal Gaming</h1>
     </div>
-
     <div class="premiere-title">
-      <h2 class="premiere-text-title">Estreno</h2>
+      <h2 class="premiere-text-title">ESTRENOS DE VIDEOJUEGOS</h2>
     </div>
   </div>
 
-  <div class="display-new-games">
-    <div class="game-premiere-information">
-      <h2 class="developer">Videojuego: {{name}}</h2>
-      <h3>Desarrollador/a: {{developer}}</h3>
-      <p>Fecha de lanzamiento: {{releaseDate}}</p>
-      <p>Categoría: {{category}}</p>
-    </div>
-    <div class="first-game-premiere-img">
-      <img id="first-game-premiere" src="../../assets/img/RE9.webp" alt="Resident-Evil-Requiem">
+  <div class="display-new-games" *ngIf="premiereGames.length > 0">
+    <div class="first-game-premiere-information" *ngFor="let game of premiereGames">
+      <div>
+        <div class="game-title">{{game.name.split(' ')[0]}} {{game.name.split(' ')[1]}}</div>
+        <div class="game-subtitle">{{game.subtitle}}</div>
+        <h3>Desarrolladora: {{game.developer}}</h3>
+        <p>Fecha de lanzamiento: <span class="release-date">{{game.releaseDate}}</span></p>
+        <p>Categoría: <span class="category">{{game.category}}</span></p>
+      </div>
+      <div>
+        <img class="first-game-premiere-photo" [src]="'../../assets/img/Resident Evil Requiem.webp'" [alt]="game.name">
+      </div>
     </div>
   </div>
+
+  <div class="available-games-section" *ngIf="availableGames.length > 0">
+    <h2 class="available-title">VIDEOJUEGOS DISPONIBLES</h2>
+    <div class="available-games-container">
+      <div class="available-game-card" *ngFor="let game of availableGames">
+        <div class="available-game-information">
+          <div class="game-text-content">
+            <div class="game-title-main">{{game.name.split(' ')[0]}} {{game.name.split(' ')[1] || ''}}</div>
+            <div class="game-subtitle-main">{{game.subtitle}}</div>
+            <h3>Desarrolladora: {{game.developer}}</h3>
+            <p>Fecha de lanzamiento: <span class="game-release-date">{{game.releaseDate}}</span></p>
+            <p>Categoría: <span class="game-category">{{game.category}}</span></p>  
+          </div>
+          <div class="game-image-content">
+            <img class="available-game-photo" [src]="getGameImagePath(game.name)" [alt]="game.name"
+              (error)="onImageError($event)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="button-section">
     <ion-button (click)="gotoMyVideogames()">Gestionar videojuegos</ion-button>
   </div>
