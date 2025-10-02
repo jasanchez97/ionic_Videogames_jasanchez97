@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { GameService } from '../services/game-service';
 
 interface Game {
+  id?: number;
   name: string;
   subtitle?: string;
   developer: string;
@@ -20,58 +22,120 @@ interface Game {
 export class HomePage implements OnInit, OnDestroy {
   private intervalId: any;
 
-  premiereGames: Game[] = [
-    {
-      name: "Resident Evil Requiem",
-      developer: "CAPCOM",
-      releaseDate: "27/02/2026",
-      category: "Supervivencia, Horror",
-      isReleased: false
-    }
-  ];
+  premiereGames: Game[] = [];
+  availableGames: Game[] = [];
 
-  availableGames: Game[] = [
-    {
-      name: "Kingdom Hearts",
-      subtitle: "All in One",
-      developer: "Square Enix",
-      releaseDate: "17/03/2020",
-      category: "Rol de acción",
-      stock: 12,
-      isReleased: true
-    },
-    {
-      name: "Dying Light",
-      developer: "Techland",
-      releaseDate: "26/01/2015",
-      category: "Supervivencia, Horror, Disparos",
-      stock: 20,
-      isReleased: true
-    }
-  ];
-
-  constructor(private router: Router) { }
+  constructor(private router: Router, private gameService: GameService) { }
 
   ngOnInit() {
-    this.checkGameReleases();
+    this.loadGamesFromService();
+
+    this.gameService.gamesUpdated.subscribe(() => {
+      this.loadGamesFromService();
+    });
+
     this.intervalId = setInterval(() => {
       this.checkGameReleases();
-    }, 24 * 60 * 60 * 1000);
+    }, 60 * 60 * 1000);
   }
 
-  ngOnDestroy() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
+  loadGamesFromService() {
+    this.gameService.getGames().subscribe({
+      next: (games: any) => {
+        this.processGames(games);
+      },
+      error: (error) => {
+        console.error('Error al cargar juegos:', error);
+        this.loadFromLocalStorage();
+      }
+    });
+  }
+
+  private processGames(games: any[]) {
+    this.premiereGames = [];
+    this.availableGames = [];
+
+    if (games && Array.isArray(games)) {
+      games.forEach((game: any) => {
+        const gameWithReleaseStatus: Game = {
+          id: game.id,
+          name: game.name,
+          subtitle: game.subtitle,
+          developer: game.developer,
+          releaseDate: game.releaseDate,
+          category: game.category,
+          stock: game.stock,
+          isReleased: this.isGameReleased(game.releaseDate)
+        };
+
+        if (gameWithReleaseStatus.isReleased) {
+          this.availableGames.push(gameWithReleaseStatus);
+        } else {
+          this.premiereGames.push(gameWithReleaseStatus);
+        }
+      });
+
+      this.saveToLocalStorage();
+    }
+
+    if (this.premiereGames.length === 0 && this.availableGames.length === 0) {
+      this.loadDefaultGames();
     }
   }
 
-  getGameImagePath(gameName: string): string {
-    const imageName = gameName.toLowerCase().replace(/ /g, '-');
-    return `../../assets/img/${imageName}.webp`;
+  private isGameReleased(releaseDate: string): boolean {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+
+    const release = this.parseDate(releaseDate);
+    return release <= currentDate;
   }
 
-  onImageError(event: any) {
-    event.target.src = '../../assets/img/default-game.webp';
+  private loadDefaultGames() {
+    this.premiereGames = [
+      {
+        name: "Resident Evil Requiem",
+        developer: "CAPCOM",
+        releaseDate: "27/02/2026",
+        category: "Supervivencia, Horror",
+        isReleased: false
+      }
+    ];
+
+    this.availableGames = [
+      {
+        name: "Kingdom Hearts",
+        subtitle: "All in One",
+        developer: "Square Enix",
+        releaseDate: "17/03/2020",
+        category: "Rol de acción",
+        stock: 12,
+        isReleased: true
+      },
+      {
+        name: "Dying Light",
+        developer: "Techland",
+        releaseDate: "26/01/2015",
+        category: "Supervivencia, Horror, Disparos",
+        stock: 20,
+        isReleased: true
+      }
+    ];
+  }
+
+  private parseDate(dateString: string): Date {
+    if (dateString.includes('/')) {
+      const [day, month, year] = dateString.split('/').map(Number);
+      const date = new Date(year, month - 1, day);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    } else if (dateString.includes('-')) {
+      const [year, month, day] = dateString.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+    return new Date(0);
   }
 
   private checkGameReleases() {
@@ -80,7 +144,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     const gamesToMove: Game[] = [];
 
-    this.premiereGames.forEach((game, index) => {
+    this.premiereGames.forEach((game) => {
       const releaseDate = this.parseDate(game.releaseDate);
 
       if (releaseDate <= currentDate) {
@@ -89,7 +153,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     gamesToMove.forEach(game => {
-      const gameIndex = this.premiereGames.findIndex(g => g.name === game.name);
+      const gameIndex = this.premiereGames.findIndex(g => g.id === game.id || g.name === game.name);
       if (gameIndex > -1) {
         const movedGame = this.premiereGames.splice(gameIndex, 1)[0];
         movedGame.isReleased = true;
@@ -100,11 +164,26 @@ export class HomePage implements OnInit, OnDestroy {
     this.saveToLocalStorage();
   }
 
-  private parseDate(dateString: string): Date {
-    const [day, month, year] = dateString.split('/').map(Number);
-    const date = new Date(year, month - 1, day);
-    date.setHours(0, 0, 0, 0);
-    return date;
+  ngOnDestroy() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  getGameImagePath(gameName: string): string {
+    if (!gameName) {
+      return '../../assets/img/default-game.webp';
+    }
+
+    const imageName = gameName.toLowerCase()
+      .replace(/ /g, '-')
+      .replace(/[^\w-]/g, '');
+
+    return `../../assets/img/${imageName}.webp`;
+  }
+
+  onImageError(event: any) {
+    event.target.src = '../../assets/img/default-game.webp';
   }
 
   private saveToLocalStorage() {

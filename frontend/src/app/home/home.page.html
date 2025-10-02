@@ -33,7 +33,7 @@
         <p>Categoría: <span class="category">{{game.category}}</span></p>
       </div>
       <div>
-        <img class="first-game-premiere-photo" [src]="'../../assets/img/Resident Evil Requiem.webp'" [alt]="game.name">
+        <img class="first-game-premiere-photo" [src]="getGameImagePath(game.name)" [alt]="game.name" (error)="onImageError($event)">
       </div>
     </div>
   </div>
@@ -48,7 +48,7 @@
             <div class="game-subtitle-main">{{game.subtitle}}</div>
             <h3>Desarrolladora: {{game.developer}}</h3>
             <p>Fecha de lanzamiento: <span class="game-release-date">{{game.releaseDate}}</span></p>
-            <p>Categoría: <span class="game-category">{{game.category}}</span></p>  
+            <p>Categoría: <span class="game-category">{{game.category}}</span></p>
           </div>
           <div class="game-image-content">
             <img class="available-game-photo" [src]="getGameImagePath(game.name)" [alt]="game.name"

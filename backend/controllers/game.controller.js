@@ -2,12 +2,16 @@ const db = require("../models");
 const Game = db.game;
 const Op = db.Sequelize.Op;
 
+let games = [];
+
 exports.create = (req, res) => {
-    if (!req.body.developer) {
-        res.status(400).send({
-            message: "Content can not be empty!"
+    console.log('=== DATA RECEIVED IN BACKEND ===');
+    console.log('Body:', req.body);
+    
+    if (!req.body.name || !req.body.developer || !req.body.releaseDate || !req.body.category) {
+        return res.status(400).json({
+            message: "Required fields are missing: name, developer, releaseDate, category"
         });
-        return;
     }
 
     const game = {
@@ -21,11 +25,14 @@ exports.create = (req, res) => {
 
     Game.create(game)
         .then(data => {
-            res.send(data);
+            res.status(201).json({
+                message: "Game created successfully",
+                game: data
+            });
         })
         .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the game."
+            res.status(500).json({
+                message: err.message || "Error creating the game."
             });
         });
 };
@@ -68,22 +75,22 @@ exports.update = (req, res) => {
     Game.update(req.body, {
         where: { id: id }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Game was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update Game with id=${id}. Maybe Game was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating Game with id=" + id
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Game was updated successfully."
             });
+        } else {
+            res.send({
+                message: `Cannot update Game with id=${id}. Maybe Game was not found or req.body is empty!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error updating Game with id=" + id
         });
+    });
 };
 
 exports.delete = (req, res) => {
@@ -92,20 +99,20 @@ exports.delete = (req, res) => {
     Game.destroy({
         where: { id: id }
     })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "Game was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete Game with id=${id}. Maybe Game was not found!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Could not delete Game with id=" + id
+    .then(num => {
+        if (num == 1) {
+            res.send({
+                message: "Game was deleted successfully!"
             });
+        } else {
+            res.send({
+                message: `Cannot delete Game with id=${id}. Maybe Game was not found!`
+            });
+        }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Could not delete Game with id=" + id
         });
+    });
 };

@@ -36,6 +36,7 @@ And on the other side, on the frontend install with:
 
 And the last step for the installation, go to MySQL Workbench and create a new schema named db_games.
 
+In case you have all installed and cloned the repository just npm install ngmodules in backend and frontend.
 
 ## Deployment
 

@@ -71,92 +71,31 @@ export class VideogamesFormPage implements OnInit {
       }
       
       this.selectedFile = file;
-      console.log('Archivo seleccionado:', file.name);
     }
   }
 
   createGame() {
-  console.log('Intentando crear juego...');
-  
-  if (this.gameForm.valid) {
-    const formData = new FormData();
-    
-    // Agregar todos los campos del formulario
-    formData.append('name', this.gameForm.value.name);
-    formData.append('subtitle', this.gameForm.value.subtitle || '');
-    formData.append('developer', this.gameForm.value.developer);
-    formData.append('releaseDate', this.formatDateForSubmit(this.gameForm.value.releaseDate));
-    formData.append('category', this.gameForm.value.category);
-    formData.append('stock', this.gameForm.value.stock.toString());
-    
-    // Agregar archivo si existe
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile, this.selectedFile.name);
-    }
-    
-    // Ver qué se está enviando
-    console.log('=== DATOS ENVIADOS AL BACKEND ===');
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
-    
-    this.gameService.createGame(formData).subscribe({
+    this.gameService.createGame(this.gameForm.value).subscribe({
       next: (response) => {
-        console.log('Juego creado exitosamente:', response);
-        this.router.navigateByUrl("/videogames");
+        this.router.navigate(['/home']);
       },
       error: (error) => {
-        console.error('Error completo al crear juego:', error);
-        console.error('Mensaje de error:', error.message);
-        console.error('Status:', error.status);
-        if (error.error) {
-          console.error('Error del servidor:', error.error);
-        }
+        console.error('Error creando juego:', error);
       }
     });
-  } else {
-    console.log("Formulario no válido");
-    this.markAllFieldsAsTouched();
   }
-}
 
   updateGame() {
-    console.log('Intentando actualizar juego...');
-    console.log('Formulario válido:', this.gameForm.valid);
+    if (this.gameId === null) return;
     
-    if (this.gameForm.valid && this.gameId) {
-      const formData = new FormData();
-      
-      formData.append('name', this.gameForm.value.name);
-      formData.append('subtitle', this.gameForm.value.subtitle || '');
-      formData.append('developer', this.gameForm.value.developer);
-      formData.append('releaseDate', this.formatDateForSubmit(this.gameForm.value.releaseDate));
-      formData.append('category', this.gameForm.value.category);
-      formData.append('stock', this.gameForm.value.stock.toString());
-      
-      if (this.selectedFile) {
-        formData.append('image', this.selectedFile, this.selectedFile.name);
+    this.gameService.updateGame(this.gameId, this.gameForm.value).subscribe({
+      next: (response) => {
+        this.router.navigate(['/home']);
+      },
+      error: (error) => {
+        console.error('Error actualizando juego:', error);
       }
-      
-      const formDataObj: any = {};
-      formData.forEach((value, key) => {
-        formDataObj[key] = value;
-      });
-      console.log('Datos a actualizar:', formDataObj);
-      
-      this.gameService.updateGame(this.gameId, formData).subscribe({
-        next: (response) => {
-          console.log('Juego actualizado exitosamente:', response);
-          this.router.navigateByUrl("/videogames");
-        },
-        error: (error) => {
-          console.error('Error al actualizar juego:', error);
-        }
-      });
-    } else {
-      console.log("Formulario no válido o ID no disponible");
-      this.markAllFieldsAsTouched();
-    }
+    });
   }
 
   dateValidator(control: AbstractControl): ValidationErrors | null {
@@ -262,8 +201,6 @@ export class VideogamesFormPage implements OnInit {
   }
 
   onSubmit() {
-    console.log('Botón presionado - Modo:', this.isEditing ? 'Edición' : 'Creación');
-    
     if (this.isEditing) {
       this.updateGame();
     } else {

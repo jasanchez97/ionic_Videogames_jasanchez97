@@ -1,21 +1,14 @@
-module.exports = app => {
-    const games = require("../controllers/game.controller.js");
-    const express = require('express');
-    const router = express.Router();
-    const multer = require('multer');
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const gameController = require('../controllers/game.controller');
 
-    // Configurar multer para manejar FormData
-    const upload = multer();
+const upload = multer();
 
-    router.post('/', upload.none(), gameController.create);
+router.post('/', upload.any(), gameController.create);
+router.get('/', gameController.findAll);
+router.get('/:id', gameController.findOne);
+router.put('/:id', upload.any(), gameController.update);
+router.delete('/:id', gameController.delete);
 
-    router.get("/", games.findAll);
-
-    router.get("/:id", games.findOne);
-
-    router.put("/:id", games.update);
-
-    router.delete("/:id", games.delete);
-
-    app.use('/api/games', router);
-};
+module.exports = router;

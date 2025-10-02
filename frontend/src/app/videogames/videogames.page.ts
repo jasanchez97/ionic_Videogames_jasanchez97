@@ -64,7 +64,6 @@ export class VideogamesPage implements OnInit {
     this.gameService.deleteGame(id).subscribe({
       next: (response) => {
         console.log('Juego eliminado:', response);
-        // Recargar la lista o actualizar la vista
         this.loadGames();
       },
       error: (error) => {
