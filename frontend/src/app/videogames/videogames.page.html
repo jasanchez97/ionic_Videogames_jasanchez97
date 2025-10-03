@@ -3,9 +3,11 @@
     <ion-item *ngFor="let game of games">
       <ion-label>
         <h1>{{ game.name }}</h1>
+        <h2>{{ game.subtitle }}</h2>
         <h2>{{ game.developer }}</h2>
         <p>Fecha: {{ game.releaseDate }}</p>
         <p>Categoría: {{ game.category }}</p>
+        <h2>Stock: {{ game.stock }}</h2>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button (click)="editGame(game.id)" color="primary">

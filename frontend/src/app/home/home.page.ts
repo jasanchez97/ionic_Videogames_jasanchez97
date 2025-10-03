@@ -95,6 +95,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.premiereGames = [
       {
         name: "Resident Evil Requiem",
+        subtitle: "requiem",
         developer: "CAPCOM",
         releaseDate: "27/02/2026",
         category: "Supervivencia, Horror",
