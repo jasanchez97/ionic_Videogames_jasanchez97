@@ -56,7 +56,7 @@ Wait for a moment and It should open the browser with the app showing.
   - [Creative Commons](https://creativecommons.org/) - Used to choose the license
   - [POSTMAN] - A big help of this aplication to test without breaking the head, here are the link: 
                 
-                https://juanantoniosanchezmartel-5178301.postman.co/workspace/Martel's-Team's-Workspace~b0be5eb8-306d-4d0a-8f2d-fd99d635e960/collection/48535726-16cadfa1-a831-4a2e-af3e-1293573f4040?action=share&source=copy-link&creator=48535726
+                https://documenter.getpostman.com/view/48535726/2sB3QJPWWt
 
 ## Contributing
 
